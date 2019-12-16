@@ -48,8 +48,8 @@ As a basic example, I am going to show how to add a Yeeligh bulb, since it invol
 
 Do the following to allow the Home Assistant to see your device.
 
-1 ) Connect the Yeelight bulb into the same network as your Home Assistant server by following its manual. You will likely need to install a Yeelight app on your smartphone. 
-2) Add the following lines to the end of the Home Assistant *configuration.yml* file locate in */home/<your user>/.homeassistant/* 
+1) Connect the Yeelight bulb into the same network as your Home Assistant server by following its manual. You will likely need to install a Yeelight app on your smartphone. 
+2) Add the following lines to the end of the Home Assistant *configuration.yml* file locate in */home/***your user***/.homeassistant/* 
 
 ```
 yeelight:
@@ -94,9 +94,9 @@ Do the following to generate an access token.
 
  An entity ID is necessary to send a command to any device, thus for our use case you need to get the entity ID of the connected Yeelight. 
  
- Entity IDs usually posses the form ***<domain>.<entity>*** and to its the IDs, click on the ***configuration*** button on the bottom of the left menu and then go to the know ***entities*** section. 
+ Entity IDs usually posses the form ***domain.entity***. To see all the available IDs click on the ***configuration*** button on the bottom of the left menu and then go to the ***entities*** section. 
  
- From there you should be able to see your ID. In case, your entity ID is not being shown there, try to get it from the ***overview*** view by clicking in the ***overview*** button on the top of the left menu.
+In case your entity ID is not being shown there, try to get it from the ***overview*** view by clicking in the ***overview*** button on the top of the left menu.
 
 # Using the Scheme API
 
@@ -109,16 +109,16 @@ Use the commands bellow to call the Home Assistant server through the Scheme API
 ```
 (load "hass.scm")
 (load-modules (hass-services-api))
-(hass-set-server-adress "<IPv4 server address>")
-(hass-set-token '<Long-Lived Access Tokens>)
+(hass-set-server-adress "IPv4 server address")
+(hass-set-token 'Long-Lived Access Tokens)
 ```
 
-Where ***<IPv4 server address>*** is your server IPv4 address and ***<Long-Lived Access Tokens>*** is your previously generated access token.
+Where ***IPv4 server address*** is your server IPv4 address and ***Long-Lived Access Tokens*** is your previously generated access token.
 
-3) Call the *turn_on* command from the configured Yeelight device from this Readme.
+3) Call the ***turn_on*** command from the configured Yeelight device from this Readme.
 
 ```
-(hass-call-service <domain> <entity> <command>)
+(hass-call-service ***domain*** ***entity*** ***command***)
 ```
 
 * Where, the *domain* is the first name of the Yeelight entity ID, *entity* is the second one, and ***command*** is the service to be called. For example, if your Yeelight has the entity ID ***light.office*** in your Home Assistant, then your *domain* is ***light*** and your entity is ***office***. The aforementioned example can be called with the command below.
