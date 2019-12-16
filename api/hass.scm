@@ -49,11 +49,11 @@
 
             Params:
 
-                value: a string specifying your access token created in your home assistant server.
+                value: a name preceeded by ' that specifies your access token created in your home assistant server.
 
             Example call:
 
-                (hass-set-token \"IUSBuifhafAShIUFH298714oiuwnfsdoh(HOFH2891hfoisnda982398.OSIF9uh9rh198\")
+                (hass-set-token 'IUSBuifhafAShIUFH298714oiuwnfsdoh(HOFH2891hfoisnda982398.OSIF9uh9rh198)
         ´´´
         
         (hass-set-server-address hass-server-ip-address #:hass-server-port)
@@ -81,21 +81,30 @@
 ;;; (hass-token)
 ;;; Home Assistant access token.
 (define hass-token 
-    'none
+	'none
 )
 
 ;;; (hass-set-server-address)
 ;;; Allows to set your Home Assistant server address and port.
-(define (hass-set-server-address hass-server-ip-address #:hass-server-port "8123")
-    (set! hass-server-address (format #f "http://~a:~a/api/services" hass-server-ip-address hass-server-port))
+(define* (hass-set-server-address 
+		hass-server-ip-address 
+		#:key 
+			(hass-server-port "8123"))
+    (set! hass-server-address 
+	(format #f "http://~a:~a/api/services" hass-server-ip-address hass-server-port)
+    )
 )
 
 ;;; (hass-set-token)
 ;;; Permits to set your access token to call for service.
 (define (hass-set-token value)
-    (begin
-        (set! hass-token value)
-    )
+    (set! hass-token value)
+)
+
+;;; (hass-current-token)
+;;; Returns the token that is currently set
+(define (hass-current-token)
+    hass-token
 )
 
 ;;; (hass-build-service-call)
@@ -106,7 +115,7 @@
 
 ;;; (hass-rest-header)
 ;;; Generates a valid header for the service call through the Home Assistant REST API.
-(define hass-rest-header 
+(define (hass-rest-header)
     (list
         (list 'content-type 'application/json)
         (list 'authorization 'Bearer hass-token)
@@ -120,7 +129,7 @@
         (http-post 
             (hass-build-service-call domain service)
             #:body (format #f "{\"entity_id\": \"~a.~a\"}" domain entity)
-            #:headers hass-rest-header
+            #:headers (hass-rest-header)
         )
     )
 )
@@ -132,8 +141,8 @@
         (bytevector->string 
             (receive (head response)
                 (http-get 
-                    (hass-build-rest-address)
-                    #:headers hass-rest-header
+                    hass-server-address
+                    #:headers (hass-rest-header)
                 )       
                 response
             )
