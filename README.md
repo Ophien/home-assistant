@@ -42,9 +42,11 @@ Run the following command to install the Home Assistant
 sudo pip3 install homeassistant
 ```
 
-# Adding a Device: Special Case
+# Adding a Device: Yeelight Bulb Special Case
 
 As a basic example, I am going to show how to add a Yeeligh bulb, since it involves a manual procedure that may be required to some devices. For all the others, it is most likely for the Home Assistant to detect them automatically.
+
+***If you have another device that can be detected automatically, skip this section.***
 
 Do the following to allow the Home Assistant to see your device.
 
@@ -90,7 +92,7 @@ Do the following to generate an access token.
 
     * keep that token because it is most likely that you will not be able to see it again.
 
-## Getting your Yeelight entity ID
+## Getting your entity ID
 
  An entity ID is necessary to send a command to any device, thus for our use case you need to get the entity ID of the connected Yeelight. 
  
@@ -115,13 +117,15 @@ Use the commands bellow to call the Home Assistant server through the Scheme API
 
 Where ***IPv4 server address*** is your server IPv4 address and ***Long-Lived Access Tokens*** is your previously generated access token.
 
-3) Call the ***turn_on*** command from the configured Yeelight device from this Readme.
+3) To call a command do.
 
 ```
 (hass-call-service ***domain*** ***entity*** ***command***)
 ```
 
 * Where, the *domain* is the first name of the Yeelight entity ID, *entity* is the second one, and ***command*** is the service to be called. For example, if your Yeelight has the entity ID ***light.office*** in your Home Assistant, then your *domain* is ***light*** and your entity is ***office***. The aforementioned example can be called with the command below.
+
+4) For our use-case, to call the ***turn_on*** command from the configured Yeelight device from this Readme do the following.
 
 ```
 (hass-call-service "light" "office" "turn_on")
