@@ -131,6 +131,14 @@ Where ***IPv4 server address*** is your server IPv4 address and ***Long-Lived Ac
 (hass-call-service "light" "office" "turn_on")
 ```
 
+5) To see all available devices, entities, and services, you get use.
+
+```
+(hass-get-available-services)
+```
+
+It will return a ***json*** string which contains all entities and their respective services.
+
 # Author
 
 [Alysson Ribeiro da Silva][author-home] - *Maintainer* - [SingularityNET][singularitynet-home]
