@@ -142,7 +142,7 @@
             (receive (head response)
                 (http-get 
                     hass-server-address
-                    #:headers hass-rest-header
+                    #:headers (hass-rest-header)
                 )       
                 response
             )
