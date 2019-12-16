@@ -1,3 +1,6 @@
+[singularitynet-home]: https://www.singularitynet.io
+[author-home]: http://alysson.thegeneralsolution.com
+
 # home-assistant-scheme-api
 
 This repository contains a home assistant Scheme API, which allows calling for services available on each of the existing smart devices connected in the Home Assistant.
@@ -123,3 +126,7 @@ Where ***<IPv4 server address>*** is your server IPv4 address and ***<Long-Lived
 ```
 (hass-call-service "light" "office" "turn_on")
 ```
+
+# Author
+
+[Alysson Ribeiro da Silva][author-home] - *Maintainer* - [SingularityNET][singularitynet-home]
