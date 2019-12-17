@@ -123,7 +123,7 @@ Where ***IPv4 server address*** is your server IPv4 address and ***Long-Lived Ac
 (hass-call-service ***domain*** ***entity*** ***command***)
 ```
 
-* Where, the *domain* is the first name of the Yeelight entity ID, *entity* is the second one, and ***command*** is the service to be called. For example, if your Yeelight has the entity ID ***light.office*** in your Home Assistant, then your *domain* is ***light*** and your entity is ***office***. The aforementioned example can be called with the command below.
+* Where, the ***domain*** is the first name of the Yeelight, ***entity*** is the second one, and ***command*** is the service to be called. For example, if your Yeelight has the entity ID ***light.office*** in your Home Assistant, then your *domain* is ***light*** and your entity is ***office***.
 
 4) For our use-case, to call the ***turn_on*** command from the configured Yeelight device from this Readme do the following.
 

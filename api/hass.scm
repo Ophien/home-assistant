@@ -72,6 +72,10 @@
         ´´´
 "
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;; PRIVATE METHODS ;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; (hass-server-address)
 ;;; Home Assistant server address.
 (define hass-server-address
@@ -82,23 +86,6 @@
 ;;; Home Assistant access token.
 (define hass-token 
 	'none
-)
-
-;;; (hass-set-server-address)
-;;; Allows to set your Home Assistant server address and port.
-(define* (hass-set-server-address 
-		hass-server-ip-address 
-		#:key 
-			(hass-server-port "8123"))
-    (set! hass-server-address 
-	(format #f "http://~a:~a/api/services" hass-server-ip-address hass-server-port)
-    )
-)
-
-;;; (hass-set-token)
-;;; Permits to set your access token to call for service.
-(define (hass-set-token value)
-    (set! hass-token value)
 )
 
 ;;; (hass-current-token)
@@ -122,15 +109,24 @@
     )
 )
 
-;;; (hass-call-service)
-;;; Calls for a specified entity service fom a domain.
-(define (hass-call-service domain entity service)
-    (begin
-        (http-post 
-            (hass-build-service-call domain service)
-            #:body (format #f "{\"entity_id\": \"~a.~a\"}" domain entity)
-            #:headers (hass-rest-header)
-        )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;; PUBLIC METHODS ;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; (hass-set-token)
+;;; Permits to set your access token to call for service.
+(define (hass-set-token value)
+    (set! hass-token value)
+)
+
+;;; (hass-set-server-address)
+;;; Allows to set your Home Assistant server address and port.
+(define* (hass-set-server-address 
+		hass-server-ip-address 
+		#:key 
+			(hass-server-port "8123"))
+    (set! hass-server-address 
+	(format #f "http://~a:~a/api/services" hass-server-ip-address hass-server-port)
     )
 )
 
@@ -147,6 +143,18 @@
                 response
             )
             "utf8"
+        )
+    )
+)
+
+;;; (hass-call-service)
+;;; Calls for a specified entity service fom a domain.
+(define (hass-call-service domain entity service)
+    (begin
+        (http-post 
+            (hass-build-service-call domain service)
+            #:body (format #f "{\"entity_id\": \"~a.~a\"}" domain entity)
+            #:headers (hass-rest-header)
         )
     )
 )
