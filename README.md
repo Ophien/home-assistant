@@ -7,7 +7,7 @@ This repository contains a home assistant Scheme API, which allows calling for s
 
 # get started
 
-You need to have a Guile environment to run Scheme scripts, the Home Assistant Server installed, and at least one smart device to use the Home Assistant Scheme API.  This API was tested on a Ubunto 18.04.
+You need to have a Guile environment to run Scheme scripts, the Home Assistant Server installed, and at least one smart device to use the Home Assistant Scheme API. This API was tested on a Ubunto 18.04.
 
 ## Installing the Guile environment
 
@@ -29,7 +29,7 @@ zcat guile-2.2.6.tar.gz | tar xvf -
 cd guile-2.2.6
 ./configure
 make
-make install    
+make install 
 ```
 
 ## Installing the Home Assistant
@@ -55,9 +55,9 @@ Do the following to allow the Home Assistant to see your device.
 
 ```
 yeelight:
-  devices:
-     x.x.x.x:
-      name: Office
+ devices:
+ x.x.x.x:
+ name: Office
 ```
 Where *x.x.x.x* is the IPv4 address of your Yeelight Bulb.
 
@@ -83,14 +83,14 @@ Do the following to generate an access token.
 1) Open a Home Assistant server.
 2) Enter its UI by typing localhost/8123 in a web-browser of your preference.
 
-    * The first time you, it will ask you to create a new account. After creating the account, log-in to the system and do the following.
+ * The first time you, it will ask you to create a new account. After creating the account, log-in to the system and do the following.
 
 3) Click on your user name at the bottom of the left menu tab.
 4) Scroll down to the bottom of the content and you will see a section called ***Long-Lived Access Tokens***.
 5) Click *create token* and give it a name.
 6) Copy the token that will be shown to you.
 
-    * keep that token because it is most likely that you will not be able to see it again.
+ * keep that token because it is most likely that you will not be able to see it again.
 
 ## Getting your entity ID
 
@@ -141,7 +141,7 @@ It will return a ***json*** string which contains all entities and their respect
 
 # Docker
 
-It is also possible to run the Home Assistant server inside a docker container. To do so, use the ***docker.sh*** script in this project's root directory. 
+It is also possible to run the Home Assistant server inside a docker container. To do so, use the ***docker.sh*** the script in this project's root directory. 
 
 ```
 chmod +x docker.sh
@@ -152,7 +152,19 @@ Through this command, it is possible to create a docker image named ***hass-img*
 
 # SSH Tunel for remote access to your Home Assistant server
 
-Firtly, make sure you have an SSH host configured in your remote machine.
+Through the following steps, you can bridge the commands from anywhere to your locally deployed hass server.
+
+Bellow, there is a basic diagram so you can understand what will happen. 
+
+1) The Home Assistant server will be running in your house or whatever locally and will be integrated with all your devices.
+2) Next, you will have a tunnel in your remote machine that can be received and redirect any command to the Home Assistant server in your house.
+3) Finally, you will be able to have access to your local server through your remote machine opened tunnel port.
+
+<p align="center">
+<img src="assets/hass_tunel.png" width="512">
+</p>
+
+Firstly, make sure you have an SSH host configured in a ***REMOTE MACHINE***.
 
 Secondly, create a private/public key pair for a user in your remote server machine and add your public key to it.
 
@@ -161,11 +173,11 @@ Third, put the SSH configurations for your remote server into the ***config*** f
 You need to provide three variables:
 
 1) SSH_TUNEL_MIDDLEWARE_PORT
-    * the port in your remote machine from where the information will be tunneled.
+ * the port in your remote machine from where the information will be tunneled.
 2) SSH_TUNEL_MIDDLEWARE_USER
-    * the user name to log-in into your remote machine.
+ * the user name to log-in into your remote machine.
 3) SSH_TUNEL_MIDDLEWARE=bh2.singularitynet.io
-    * your remote machine's domain name.
+ * your remote machine's domain name.
 
 Fourth, put your private key into the ***private-key-hass*** located in the ***ssh_tunel*** folder.
 
@@ -173,21 +185,21 @@ Now, to launch the Home Assistant you have two options.
 
 1) run it directly in a host machine with the following.
 
-    ```
-    ssh -nN -R <remote port>:localhost:8123 -o StrictHostKeyChecking=no -i <p-key> <remote user>@$<remote address> &
+ ```
+ ssh -nN -R <remote port>:localhost:8123 -o StrictHostKeyChecking=no -i <p-key> <remote user>@$<remote address> &
 
-    hass --open-ui
-    ```
+ hass --open-ui
+ ```
 
-    These commands will open a SSH tunel between the remote server and your Home Assistant server,
+ These commands will open an SSH tunnel between the remote server and your Home Assistant server,
 
-    where ***8123*** is the hass default port, \<remote port\> is the port used by the tunnel in you remote machine, \<p-key\> is your private key used to log-in into your remote machine, \<remote user\> and \<remote address\> are your user and remote machine address, respectively.
+ where ***8123*** is the hass default port, \<remote port\> is the port used by the tunnel in your remote machine, \<p-key\> is your private key used to log-in into your remote machine, \<remote user\> and \<remote address\> are your user and remote machine address, respectively.
 
 2) Use the ***docker.sh*** script again to run it automatically inside a docker container.
 
-    ```
-    ./docker.sh
-    ```
+ ```
+ ./docker.sh
+ ```
 
 # Author
 
