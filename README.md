@@ -201,6 +201,12 @@ Now, to launch the Home Assistant you have two options.
     ./docker.sh
     ```
 
+    * In this case, the diagram for your deployment will look like the following.
+
+<p align="center">
+<img src="assets/hass_tunnel_docker.png" width="512">
+</p>
+
 # Author
 
 [Alysson Ribeiro da Silva][author-home] - *Maintainer* - [SingularityNET][singularitynet-home]
