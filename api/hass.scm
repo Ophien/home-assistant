@@ -5,6 +5,7 @@
         hass-get-available-services
         hass-set-token
         hass-set-server-address
+        hass-get-all-entities-and-services
     )
 )
 
@@ -12,6 +13,7 @@
     (web client)
     (ice-9 receive)
     (ice-9 iconv)
+    (json)
 )
 
 "
@@ -72,20 +74,31 @@
         ´´´
 "
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;; PRIVATE METHODS ;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; (hass-server-address)
 ;;; Home Assistant server address.
 (define hass-server-address
-    "http://0.0.0.0:8123/api/services"
+    "http://0.0.0.0:8123"
 )
 
 ;;; (hass-token)
 ;;; Home Assistant access token.
 (define hass-token 
 	'none
+)
+
+;;; (hass-set-server-address)
+;;; Allows to set your Home Assistant server address and port.
+(define* (hass-set-server-address 
+		hass-server-ip-address 
+		#:key 
+			(hass-server-port "8123"))
+    (set! hass-server-address 
+	(format #f "http://~a:~a" hass-server-ip-address hass-server-port)
+    )
+)
+
+(define (hass-set-token value)
+    (set! hass-token value)
 )
 
 ;;; (hass-current-token)
@@ -97,7 +110,7 @@
 ;;; (hass-build-service-call)
 ;;; Builds a string containing a service call to your Home Assistant server.
 (define (hass-build-service-call domain service)
-    (format #f "~a/~a/~a" hass-server-address domain service)
+    (format #f "~a/api/services/~a/~a" hass-server-address domain service)
 )
 
 ;;; (hass-rest-header)
@@ -106,44 +119,6 @@
     (list
         (list 'content-type 'application/json)
         (list 'authorization 'Bearer hass-token)
-    )
-)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;; PUBLIC METHODS ;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; (hass-set-token)
-;;; Permits to set your access token to call for service.
-(define (hass-set-token value)
-    (set! hass-token value)
-)
-
-;;; (hass-set-server-address)
-;;; Allows to set your Home Assistant server address and port.
-(define* (hass-set-server-address 
-		hass-server-ip-address 
-		#:key 
-			(hass-server-port "8123"))
-    (set! hass-server-address 
-	(format #f "http://~a:~a/api/services" hass-server-ip-address hass-server-port)
-    )
-)
-
-;;; (hass-get-available-services)
-;;; Get all available services from your Home Assistant server and returns a json file containing all available services.
-(define (hass-get-available-services)
-    (begin
-        (bytevector->string 
-            (receive (head response)
-                (http-get 
-                    hass-server-address
-                    #:headers (hass-rest-header)
-                )       
-                response
-            )
-            "utf8"
-        )
     )
 )
 
@@ -158,3 +133,155 @@
         )
     )
 )
+
+;;; (hass-get-available-services)
+;;; Get all available services from your Home Assistant server and returns a json file containing all available services.
+(define (hass-get-available-services)
+    (begin
+        (bytevector->string 
+            (receive (head response)
+                (http-get 
+                    (format "~a/api/services" hass-server-address)
+                    #:headers (hass-rest-header)
+                )       
+                response
+            )
+            "utf8"
+        )
+    )
+)
+
+;;; (hass-get-available-entities)
+;;; Get all available services from your Home Assistant server and returns a json file containing all available entities and their states.
+(define (hass-get-available-entities)
+    (begin
+        (bytevector->string 
+            (receive (head response)
+                (http-get 
+                    (format #f "~a/api/states" hass-server-address)
+                    #:headers (hass-rest-header)
+                )       
+                response
+            )
+            "utf8"
+        )
+    )
+)
+
+;;; (hass-get-domain-from-entityid)
+;;; return the domain from the complete entity id
+(define (hass-get-domain-from-entityid entity-id)
+    (list-ref (string-split entity-id #\.) 0)
+)
+
+;;; (hass-get-entity-from-entityid)
+;;; return the entity from the complete entity id
+(define (hass-get-entity-from-entityid entity-id)
+    (list-ref (string-split entity-id #\.) 1)
+)
+
+;;; (hass-get-all-entities)
+;;; get all entities from the hass server
+(define* (hass-get-all-entities)
+    (let*
+        (
+            (entities-json-obj (json-string->scm (hass-get-available-entities)))
+            (entities-ids '())
+        )
+        (map
+            (lambda(entity)
+                (let*
+                    (
+                        (entity-id (assoc-ref entity "entity_id"))
+                        (entity (hass-get-entity-from-entityid entity-id))
+                        (domain (hass-get-domain-from-entityid entity-id))
+                    )
+                    (set! entities-ids 
+                        (append entities-ids 
+                            (list
+                                (list domain entity)
+                            )
+                        )
+                    )
+                )
+            )
+            (array->list entities-json-obj)
+        )
+        entities-ids
+    )
+)
+
+;;; (hass-get-all-domains)
+;;; get all entities from the hass server
+(define* (hass-get-all-domains-services)
+    (let*
+        (
+            (services-json-obj (json-string->scm (hass-get-available-services)))
+            (services-ids '())
+        )
+        (map
+            (lambda(entity)
+                (let*
+                    (
+                        (domain (assoc-ref entity "domain"))
+                        (services (assoc-ref entity "services"))
+                        (filtered-services (hass-filter-services services))
+                    )
+                    (set! services-ids 
+                        (acons domain filtered-services services-ids)
+                    )
+                )
+            )
+            (array->list services-json-obj)
+        )
+        services-ids 
+    )
+)
+
+;;; (hass-filter-services)
+;;; used to get only the service name given a domain
+(define* (hass-filter-services services)
+    (let*
+        (
+            (output-list '())
+        )
+        (map
+            (lambda (el)
+                (set! output-list (append output-list (list(list-ref el 0))))
+            )
+            services
+        )
+        output-list
+    )
+)
+
+;;; (hass-get-all-entities-and-services)
+;;; get all services provided by hass for each entity
+(define* (hass-get-all-entities-and-services)
+    (let*
+        (
+            (all-entities (hass-get-all-entities))
+            (all-services (hass-get-all-domains-services))
+            (output-list '())
+        )
+        (map
+            (lambda (el)
+                (let*
+                    (
+                        (entity (list-ref el 1))
+                        (domain (list-ref el 0))
+                        (services-list (assoc-ref all-services domain))
+                        (entity-s-list '())
+                    )
+                    (set! entity-s-list (acons 'entity entity entity-s-list))
+                    (set! entity-s-list (acons 'domain domain entity-s-list))
+                    (set! entity-s-list (acons 'services services-list entity-s-list))
+                    (set! output-list (append output-list (list entity-s-list)))
+                )
+            )
+            all-entities
+        )
+        output-list
+    )
+)
+
