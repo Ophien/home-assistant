@@ -27,7 +27,7 @@
         
         (hass-call-service domain entity service)
 
-        ´´´
+        ```
             * Call to the Home Assistant server to the aforementioned domain, entity, and service.
 
             Params:
@@ -40,13 +40,13 @@
             Example call:
 
                 (hass-call-service  \"light\" \"office\" \"turn_on\")        
-        ´´´
+        ```
 
         (hass-get-available-services) - this function prints on the terminal all the available services from your home assistant server.
         
         (hass-set-token value)
 
-        ´´´
+        ```
             * this function allows you to set the access token for your home assistant server.
 
             Params:
@@ -56,11 +56,11 @@
             Example call:
 
                 (hass-set-token 'IUSBuifhafAShIUFH298714oiuwnfsdoh(HOFH2891hfoisnda982398.OSIF9uh9rh198)
-        ´´´
+        ```
         
         (hass-set-server-address hass-server-ip-address #:hass-server-port)
 
-        ´´´
+        ```
             * allows to set the IP address for your home assistant server.
 
             Params:
@@ -71,7 +71,13 @@
             Example call:
 
                 (hass-set-server-address \"192.168.1.254\" #:hass-server-port \"8123\")
-        ´´´
+        ```
+
+        (hass-get-all-entities-and-services)
+
+        ```
+            * returns an association list with all entities and their available services from your home assistant server
+        ```
 "
 
 ;;; (hass-server-address)
