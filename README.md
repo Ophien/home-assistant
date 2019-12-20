@@ -173,11 +173,11 @@ Third, put the SSH configurations for your remote server into the ***config*** f
 You need to provide three variables:
 
 1) SSH_TUNEL_MIDDLEWARE_PORT
- * the port in your remote machine from where the information will be tunneled.
+    * the port in your remote machine from where the information will be tunneled.
 2) SSH_TUNEL_MIDDLEWARE_USER
- * the user name to log-in into your remote machine.
+    * the user name to log-in into your remote machine.
 3) SSH_TUNEL_MIDDLEWARE=bh2.singularitynet.io
- * your remote machine's domain name.
+    * your remote machine's domain name.
 
 Fourth, put your private key into the ***private-key-hass*** located in the ***ssh_tunel*** folder.
 
@@ -185,21 +185,21 @@ Now, to launch the Home Assistant you have two options.
 
 1) run it directly in a host machine with the following.
 
- ```
- ssh -nN -R <remote port>:localhost:8123 -o StrictHostKeyChecking=no -i <p-key> <remote user>@$<remote address> &
+    ```
+    ssh -nN -R <remote port>:localhost:8123 -o StrictHostKeyChecking=no -i <p-key> <remote user>@$<remote address> &
 
- hass --open-ui
- ```
+    hass --open-ui
+    ```
 
- These commands will open an SSH tunnel between the remote server and your Home Assistant server,
+    These commands will open an SSH tunnel between the remote server and your Home Assistant server,
 
- where ***8123*** is the hass default port, \<remote port\> is the port used by the tunnel in your remote machine, \<p-key\> is your private key used to log-in into your remote machine, \<remote user\> and \<remote address\> are your user and remote machine address, respectively.
+    where ***8123*** is the hass default port, \<remote port\> is the port used by the tunnel in your remote machine, \<p-key\> is your private key used to log-in into your remote machine, \<remote user\> and \<remote address\> are your user and remote machine address, respectively.
 
 2) Use the ***docker.sh*** script again to run it automatically inside a docker container.
 
- ```
- ./docker.sh
- ```
+    ```
+    ./docker.sh
+    ```
 
 # Author
 
