@@ -139,6 +139,56 @@ Where ***IPv4 server address*** is your server IPv4 address and ***Long-Lived Ac
 
 It will return a ***json*** string which contains all entities and their respective services.
 
+# Docker
+
+It is also possible to run the Home Assistant server inside a docker container. To do so, use the ***docker.sh*** script in this project's root directory. 
+
+```
+chmod +x docker.sh
+./docker.sh
+```
+
+Through this command, it is possible to create a docker image named ***hass-img*** for the hass container based on the ***Python:3***. Also, a container named ***hass*** will automatically be launched after.
+
+# SSH Tunel for remote access to your Home Assistant server
+
+Firtly, make sure you have an SSH host configured in your remote machine.
+
+Secondly, create a private/public key pair for a user in your remote server machine and add your public key to it.
+
+Third, put the SSH configurations for your remote server into the ***config*** file inside the ssh_tunel folder.
+
+You need to provide three variables:
+
+1) SSH_TUNEL_MIDDLEWARE_PORT
+    * the port in your remote machine from where the information will be tunneled.
+2) SSH_TUNEL_MIDDLEWARE_USER
+    * the user name to log-in into your remote machine.
+3) SSH_TUNEL_MIDDLEWARE=bh2.singularitynet.io
+    * your remote machine's domain name.
+
+Fourth, put your private key into the ***private-key-hass*** located in the ***ssh_tunel*** folder.
+
+Now, to launch the Home Assistant you have two options.
+
+1) run it directly in a host machine with the following.
+
+    ```
+    ssh -nN -R <remote port>:localhost:8123 -o StrictHostKeyChecking=no -i <p-key> <remote user>@$<remote address> &
+
+    hass --open-ui
+    ```
+
+    These commands will open a SSH tunel between the remote server and your Home Assistant server,
+
+    where ***8123*** is the hass default port, \<remote port\> is the port used by the tunnel in you remote machine, \<p-key\> is your private key used to log-in into your remote machine, \<remote user\> and \<remote address\> are your user and remote machine address, respectively.
+
+2) Use the ***docker.sh*** script again to run it automatically inside a docker container.
+
+    ```
+    ./docker.sh
+    ```
+
 # Author
 
 [Alysson Ribeiro da Silva][author-home] - *Maintainer* - [SingularityNET][singularitynet-home]
